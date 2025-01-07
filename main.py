@@ -1,6 +1,10 @@
 import pygame
+import sys
 from constants import * 
 from player import Player
+from astroid import Astroid
+from astroid_field import AstroidField
+from shot import Shot
 
 def main():
     
@@ -13,12 +17,19 @@ def main():
     
     game_clock = pygame.time.Clock()
     dt = 0
+    
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
+    astroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
     
     Player.containers = (updatable, drawable)
+    Astroid.containers = (astroids, updatable, drawable)
+    AstroidField.containers = (updatable)
+    Shot.containers = (shots, updatable, drawable)
     
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    field = AstroidField()
     
     #Game loop:
     while True:
@@ -33,6 +44,11 @@ def main():
         
         for obj in drawable:
             obj.draw(screen)
+            
+        for obj in astroids:
+            if obj.collision(player):
+                print("Game over!")
+                sys.exit()
         
         pygame.display.flip()
         
